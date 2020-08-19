@@ -35,3 +35,23 @@
 - 按钮
 - 边框和阴影
 - 可配置开关
+
+### 测试的重要性
+
+- 高质量代码
+- 更早的发现 bug，减少成本
+- 让重构和升级变得更加容易可靠
+- 让开发流程更加敏捷
+
+### React 适合单元测试的原因
+
+- Component -组件
+- Function -函数
+- 单向数据流
+
+### 使用 create-react-app 创建的项目支持 Jest 断言库进行测试
+
+- 使用`npx xxx(测试的文件名) --watch` 配合`--watch`表示监听该测试,测试文件发生变化就重新运行
+
+### React官方推荐使用的测试框架
+- [React Testing Library](https://reactjs.bootcss.com/docs/test-utils.html)

@@ -1,17 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
 // 常量一般使用枚举来创建
-export enum ButtonSize {
-  Large = 'lg',
-  Small = 'sm'
-}
+// export enum ButtonSize = 'lg' | 'sm'
 
-export enum ButtonType {
-  Primary = 'primary',
-  Default = 'default',
-  Danger = 'danger',
-  Link = 'link'
-}
+export type ButtonSize = 'lg' | 'sm'
+export type ButtonType = 'primary' | 'default' | 'danger' | 'link'
+
+// export enum ButtonType {
+//   Primary = 'primary',
+//   Default = 'default',
+//   Danger = 'danger',
+//   Link = 'link'
+// }
 
 /**
  * React.ReactNode 可以接受各种类型
@@ -51,10 +51,10 @@ const Button: React.FC<ButtonProps> = (props) => {
   const classes = classNames('btn', className, {
     [`btn-${btnType}`]: btnType,
     [`btn-${size}`]: size,
-    'disabled': (btnType === ButtonType.Link) && disabled
+    'disabled': (btnType === 'link') && disabled
   })
   // link
-  if (btnType === ButtonType.Link && href) {
+  if (btnType === 'link' && href) {
     return <a href={href} className={classes} {...restProps} >{children}</a>
   } else {
     return <button className={classes} disabled={disabled} {...restProps} >{children}</button>
@@ -64,7 +64,7 @@ const Button: React.FC<ButtonProps> = (props) => {
 // 默认值设置
 Button.defaultProps = {
   disabled: false,
-  btnType: ButtonType.Default
+  btnType: 'default'
 };
 
 export default Button
