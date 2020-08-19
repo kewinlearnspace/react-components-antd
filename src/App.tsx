@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Button btnType={ButtonType.Primary} size={ButtonSize.Large}>Primary  Lagre</Button>
+        <Button onClick={(e) => {e.preventDefault(); alert(123)} } btnType={ButtonType.Primary} size={ButtonSize.Large}>Primary  Lagre</Button>
         <br />
         <Button btnType={ButtonType.Danger} size={ButtonSize.Small}>Danger small </Button>
         <br />

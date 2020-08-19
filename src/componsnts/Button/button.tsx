@@ -17,7 +17,7 @@ export enum ButtonType {
  * React.ReactNode 可以接受各种类型
  * type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
  */
-interface IButtonProps {
+interface IBaseButtonProps {
   className?: string,
   disabled?: boolean,
   size?: ButtonSize,
@@ -26,26 +26,45 @@ interface IButtonProps {
   children: React.ReactNode
 }
 
-const Button: React.FC<IButtonProps> = (props) => {
-  const { btnType, disabled, size, href, children } = props
+/**
+ * 定义类型别名 获取到Button上原生的所有属性
+ * 不能使用联合类型，联合类型返回的是a类型或者b类型 使用'|'进行连接
+ * 使用TS语法的交叉类型 可以将多个类型进行叠加,包含所有类型 使用'&'进行连接
+ */
+// Button按钮
+type NativeButtonProps = IBaseButtonProps & React.ButtonHTMLAttributes<HTMLElement>
+// a标签
+type AnchorButtonProps = IBaseButtonProps & React.AnchorHTMLAttributes<HTMLElement>
+// Button与a 结合
+export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
+const Button: React.FC<ButtonProps> = (props) => {
+  const {
+    btnType,
+    className,
+    disabled,
+    size,
+    href,
+    children,
+    ...restProps
+  } = props
   // 默认存在btn类名 btn, btn-lg, btn-primary
-  const classes = classNames('btn', {
+  const classes = classNames('btn', className, {
     [`btn-${btnType}`]: btnType,
     [`btn-${size}`]: size,
     'disabled': (btnType === ButtonType.Link) && disabled
   })
   // link
   if (btnType === ButtonType.Link && href) {
-    return <a href={href} className={classes}>{children}</a>
+    return <a href={href} className={classes} {...restProps} >{children}</a>
   } else {
-    return <button className={classes} disabled={disabled}>{children}</button>
+    return <button className={classes} disabled={disabled} {...restProps} >{children}</button>
   }
 }
 
 // 默认值设置
 Button.defaultProps = {
   disabled: false,
-  btnType:ButtonType.Default
+  btnType: ButtonType.Default
 };
 
 export default Button
