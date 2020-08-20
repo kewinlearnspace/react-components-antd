@@ -1,32 +1,16 @@
 import React from 'react';
-import Button, { ButtonType, ButtonSize } from './componsnts/Button/button';
+import Menu from './componsnts/Menu/menu';
+import MenuItem from './componsnts/Menu/menuItem';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Button onClick={(e) => { e.preventDefault(); alert(123) }} btnType='primary' size='lg'>Primary  Lagre</Button>
-        <br />
-        <Button className='customer' btnType='danger' size='sm'>Danger small </Button>
-        <br />
-        <Button btnType='default' size='sm'>Default Small </Button>
-        <br />
-        <Button disabled> Disabled Button</Button>
-        <br />
-        <Button btnType='link' href="www.baidu.com" disabled>Disabled Link</Button>
-        <br />
-        <Button btnType='link' href="www.baidu.com">Baidu Link</Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Menu defaultIndex={0} mode='vertical' onSelect={(index) => { alert(index) }}>
+          <MenuItem index={0}> cool link</MenuItem>
+          <MenuItem index={1} disabled> cool link 2</MenuItem>
+          <MenuItem index={2}> cool link 3</MenuItem>
+        </Menu>
       </header>
     </div>
   );
