@@ -1,10 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 // 常量一般使用枚举来创建
-// export enum ButtonSize = 'lg' | 'sm'
-
-export type ButtonSize = 'lg' | 'sm'
-export type ButtonType = 'primary' | 'default' | 'danger' | 'link'
 
 // export enum ButtonType {
 //   Primary = 'primary',
@@ -13,6 +9,9 @@ export type ButtonType = 'primary' | 'default' | 'danger' | 'link'
 //   Link = 'link'
 // }
 
+// 常量也可以使用字符串字面量来定义 
+export type ButtonSize = 'lg' | 'sm'
+export type ButtonType = 'primary' | 'default' | 'danger' | 'link'
 /**
  * React.ReactNode 可以接受各种类型
  * type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
