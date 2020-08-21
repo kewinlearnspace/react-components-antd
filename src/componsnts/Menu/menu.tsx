@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { IMenuItemProps } from './menuItem';
 import ClassNames from 'classnames';
 
 type MenuMode = 'horizontal' | 'vertical'
@@ -23,7 +24,8 @@ const Menu: React.FC<IMenuProps> = (props) => {
   const { defaultIndex, className, mode, style, children, onSelect } = props
   const [currentActive, setCurrentActive] = useState(defaultIndex)
   const classes = ClassNames('kewin-menu', className, {
-    'menu-vertical': mode === 'vertical'
+    'menu-vertical': mode === 'vertical',
+    'menu-horizontal': mode !== 'vertical',
   })
   const handleClick = (index: number) => {
     setCurrentActive(index)
@@ -36,9 +38,28 @@ const Menu: React.FC<IMenuProps> = (props) => {
     index: currentActive ? currentActive : 0,
     onSelect: handleClick
   }
+
+  // 控制children渲染的节点组的渲染类型 =>仅支持渲染MenuItem组件
+  const renderChildren = () => {
+    return React.Children.map(children, (child, index) => {
+      const childElement = child as React.FunctionComponentElement<IMenuItemProps>
+      const { displayName } = childElement.type
+      if (displayName === 'MenuItem') {
+        // cloneElement将属性混入
+        return React.cloneElement(childElement, {
+          index
+        })
+      } else {
+        console.error("Warning: Menu has a child which is not a MenuItem component")
+
+      }
+    })
+  }
+
   return <ul className={classes} style={style} data-testid="test-menu">
     <MenuContext.Provider value={passedContext}>
-      {children}
+      {renderChildren}
+      {/* {children} */}
     </MenuContext.Provider>
   </ul>
 }
