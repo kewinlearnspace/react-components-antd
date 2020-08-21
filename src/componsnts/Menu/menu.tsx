@@ -44,21 +44,20 @@ const Menu: React.FC<IMenuProps> = (props) => {
     return React.Children.map(children, (child, index) => {
       const childElement = child as React.FunctionComponentElement<IMenuItemProps>
       const { displayName } = childElement.type
-      if (displayName === 'MenuItem') {
+      if (displayName === 'MenuItem' || displayName === 'SubMenu') {
         // cloneElement将属性混入
         return React.cloneElement(childElement, {
           index
         })
       } else {
         console.error("Warning: Menu has a child which is not a MenuItem component")
-
       }
     })
   }
 
   return <ul className={classes} style={style} data-testid="test-menu">
     <MenuContext.Provider value={passedContext}>
-      {renderChildren}
+      {renderChildren()}
       {/* {children} */}
     </MenuContext.Provider>
   </ul>
