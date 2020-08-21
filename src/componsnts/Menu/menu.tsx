@@ -15,7 +15,8 @@ export interface IMenuProps {
 
 interface IMenuContext {
   index: number;
-  onSelect?: SelectCallback
+  onSelect?: SelectCallback;
+  mode?: MenuMode
 }
 
 export const MenuContext = createContext<IMenuContext>({ index: 0 })
@@ -36,7 +37,8 @@ const Menu: React.FC<IMenuProps> = (props) => {
   // 传递给子组件的context集合
   const passedContext: IMenuContext = {
     index: currentActive ? currentActive : 0,
-    onSelect: handleClick
+    onSelect: handleClick,
+    mode: mode
   }
 
   // 控制children渲染的节点组的渲染类型 =>仅支持渲染MenuItem组件

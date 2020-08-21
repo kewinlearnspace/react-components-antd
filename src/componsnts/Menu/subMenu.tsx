@@ -1,4 +1,4 @@
-import React, { useContext, FunctionComponentElement } from 'react';
+import React, { useContext, FunctionComponentElement, useState } from 'react';
 import classNames from 'classnames';
 import { MenuContext } from './menu';
 import { IMenuItemProps } from './menuItem';
@@ -10,11 +10,29 @@ export interface ISubMenuProps {
 }
 
 const SubMenu: React.FC<ISubMenuProps> = ({ index, title, className, children }) => {
+  const [menuOpen, setMenuOpen] = useState(false)
   const context = useContext(MenuContext)
   const classes = classNames('menu-item submenu-item', classNames, {
     'is-active': context.index === index
   })
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setMenuOpen(!menuOpen)
+  }
+
+  let timer: any
+  const handleMouse = (e: React.MouseEvent, toggle: boolean) => {
+    clearTimeout(timer)
+    e.preventDefault()
+    timer = setTimeout(() => {
+      setMenuOpen(toggle)
+    }, 3000)
+  }
+
   const renderChildren = () => {
+    const subMenuClasses = classNames('kewin-submenu', {
+      'menu-opened': menuOpen
+    })
     const childrenComponent = React.Children.map(children, (child, index) => {
       const childElement = child as FunctionComponentElement<IMenuItemProps>
       if (childElement.type.displayName === 'MenuItem') {
@@ -23,12 +41,12 @@ const SubMenu: React.FC<ISubMenuProps> = ({ index, title, className, children })
         console.error("Warning: Menu has a child which is not a MenuItem component")
       }
     })
-    return <ul className="kewin-submenu">
+    return <ul className={subMenuClasses}>
       {childrenComponent}
     </ul>
   }
   return <li key={index} className={classes}>
-    <div className="submenu-title">
+    <div className="submenu-title" onClick={handleClick}>
       {title}
     </div>
     {renderChildren()}
