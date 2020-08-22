@@ -4,14 +4,17 @@ import { MenuContext } from './menu';
 import { IMenuItemProps } from './menuItem';
 
 export interface ISubMenuProps {
-  index?: number,
+  index?: string,
   title: string,
   className?: string
 }
 
 const SubMenu: React.FC<ISubMenuProps> = ({ index, title, className, children }) => {
-  const [menuOpen, setMenuOpen] = useState(false)
   const context = useContext(MenuContext)
+  const openedSubMenus = context.defaultOpenSubMenus as Array<String>
+  // 仅在vertical中可以默认打开
+  const isOpen = index && context.mode === 'vertical' ? openedSubMenus.includes(index) : false
+  const [menuOpen, setMenuOpen] = useState(isOpen)
   const classes = classNames('menu-item submenu-item', classNames, {
     'is-active': context.index === index
   })
@@ -22,7 +25,6 @@ const SubMenu: React.FC<ISubMenuProps> = ({ index, title, className, children })
 
   let timer: any
   const handleMouse = (e: React.MouseEvent, toggle: boolean) => {
-    console.log(toggle)
     clearTimeout(timer)
     e.preventDefault()
     timer = setTimeout(() => {
@@ -43,10 +45,12 @@ const SubMenu: React.FC<ISubMenuProps> = ({ index, title, className, children })
     const subMenuClasses = classNames('kewin-submenu', {
       'menu-opened': menuOpen
     })
-    const childrenComponent = React.Children.map(children, (child, index) => {
+    const childrenComponent = React.Children.map(children, (child, i) => {
       const childElement = child as FunctionComponentElement<IMenuItemProps>
       if (childElement.type.displayName === 'MenuItem') {
-        return childElement
+        return React.cloneElement(childElement, {
+          index: `${index}-${i}`
+        })
       } else {
         console.error("Warning: Menu has a child which is not a MenuItem component")
       }
