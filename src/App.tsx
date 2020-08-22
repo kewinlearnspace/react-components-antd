@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import Menu from './componsnts/Menu/menu';
 import MenuItem from './componsnts/Menu/menuItem';
 import SubMenu from './componsnts/Menu/subMenu';
-import Icon from './componsnts/Icon/icon'
-
+import Transition from './componsnts/Transition/transition'
+import Button from './componsnts/Button/button'
 library.add(fas)
 
 function App() {
+  const [show, setShow] = useState(false)
   return (
     <div className="App">
       <header className="App-header">
-        <Icon icon="arrow-down" theme="primary" size="10x" />
-        <Menu defaultIndex='0' mode="vertical" onSelect={(index) => { alert(index) }} defaultOpenSubMenus={['2']} >
+        <Menu defaultIndex='0' onSelect={(index) => { alert(index) }} defaultOpenSubMenus={['2']} >
           <MenuItem> cool link</MenuItem>
           <MenuItem disabled> cool link 2</MenuItem>
           <SubMenu title="dropdown">
@@ -23,6 +23,29 @@ function App() {
           </SubMenu>
           <MenuItem> cool link 3</MenuItem>
         </Menu>
+        <Button size='lg' onClick={() => { setShow(!show) }} >Toggle </Button>
+        <Transition in={show} timeout={300} animation='zoom-in-left'>
+          <div>
+            <p>
+              Edit <code>src/App.tsx</code> and save to reload.
+            </p>
+            <p>
+              Edit <code>src/App.tsx</code> and save to reload.
+            </p>
+            <p>
+              Edit <code>src/App.tsx</code> and save to reload.
+            </p>
+            <p>
+              Edit <code>src/App.tsx</code> and save to reload.
+            </p>
+            <p>
+              Edit <code>src/App.tsx</code> and save to reload.
+            </p>
+          </div>
+        </Transition>
+        <Transition in={show} timeout={300} animation='zoom-in-left' wrapper>
+          <Button btnType='primary' size='lg'>A Large</Button>
+        </Transition>
       </header>
     </div>
   );

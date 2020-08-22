@@ -56,8 +56,3 @@
 ### React官方推荐使用的测试框架
 - [React Testing Library](https://reactjs.bootcss.com/docs/test-utils.html)
 
-### Icon图标库解决方案
-- [font awesome](https://github.com/FortAwesome/react-fontawesome) 
-  - `npm i --save @fortawesome/fontawesome-svg-core`
-  - `npm i --save @fortawesome/free-solid-svg-icons`
-  - `npm i --save @fortawesome/react-fontawesome`
