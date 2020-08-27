@@ -82,7 +82,8 @@
   ```json
   "storybook": "start-storybook -p 9001 -c .storybook" // 指定配置文件目录为 .storybook
   ```
-- 项目根目录新建`.storybook/config.ts(config.js)`.并编写配置,可参考[官网](https://storybook.js.org/)。`config`文件就是运行storybook之前执行的配置文件
+- 项目根目录新建`.storybook/config.ts(config.js)`.并编写配置,可参考[官网](https://storybook.js.org/)。`config`文件就是运行 storybook 之前执行的配置文件
+  - 可配置需要加载的文件,和一些全局装饰器等
   ```typescript
   // 参考
   import { configure } from '@storybook/react'
@@ -131,8 +132,10 @@
   ```
 - storybook 常用插件
 
-```shell
-npm add -D @storybook/addons @storybook/addon-actions @storybook/addon-links @storybook/addon-notes storybook-readme
-```
+  - @storybook/addons
+  - @storybook/addon-actions (支持查看输出面板)
+  - @storybook/addon-links (支持不同组件之间跳转)
+  - @storybook/addon-notes storybook-readme
+  - @storybook/addon-info (组件参数的详细文档和使用组件的代码)
 
-- 建立配置文件 .storybook/addons.js。引入 addons 相关插件文件
+- 建立配置文件 `.storybook/addons.js`。引入 `addons` 相关插件文件,在`addons`中注册的插件才能在 storybook 中正常使用

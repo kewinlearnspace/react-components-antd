@@ -23,7 +23,7 @@ module.exports = ({ config }) => {
       },
     ],
   })
-
+  // 配置解析 scss语法文件
   config.module.rules.push({
     test: /\.scss$/,
     loaders: [
