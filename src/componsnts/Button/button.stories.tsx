@@ -24,6 +24,6 @@ const buttonWidthType = () => (
 )
 
 storiesOf('Button Component', module)
-  .add('default Button', defaultButton)
+  .add('Button', defaultButton)  // 字符串参数和定义的组件一致才能展示出通过注释生成的文档
   .add('size Button', buttonWithSize)
   .add('btnType Button', buttonWidthType)

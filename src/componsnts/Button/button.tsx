@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {
+  ButtonHTMLAttributes,
+  AnchorHTMLAttributes,
+  FC
+} from 'react';
 import classNames from 'classnames';
 // 常量一般使用枚举来创建
 
@@ -18,9 +22,13 @@ export type ButtonType = 'primary' | 'default' | 'danger' | 'link'
  */
 interface IBaseButtonProps {
   className?: string,
+  /** 设置Button是否禁用 ,默认值是false*/
   disabled?: boolean,
+  /** 设置Button的大小*/
   size?: ButtonSize,
+  /** 设置Button的类型, 默认值是default*/
   btnType?: ButtonType,
+  /** Button的类型为link时, 连接跳转设置*/
   href?: string,
   children: React.ReactNode
 }
@@ -31,12 +39,18 @@ interface IBaseButtonProps {
  * 使用TS语法的交叉类型 可以将多个类型进行叠加,包含所有类型 使用'&'进行连接
  */
 // Button按钮
-type NativeButtonProps = IBaseButtonProps & React.ButtonHTMLAttributes<HTMLElement>
+type NativeButtonProps = IBaseButtonProps & ButtonHTMLAttributes<HTMLElement>
 // a标签
-type AnchorButtonProps = IBaseButtonProps & React.AnchorHTMLAttributes<HTMLElement>
+type AnchorButtonProps = IBaseButtonProps & AnchorHTMLAttributes<HTMLElement>
 // Button与a 结合
 export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
-const Button: React.FC<ButtonProps> = (props) => {
+/** 
+ * ### Button组件的使用
+ * ~~~js
+ * import { Button } from 'kewin-component'
+ * ~~~
+*/
+export const Button: FC<ButtonProps> = (props) => {
   const {
     btnType,
     className,

@@ -52,6 +52,7 @@
     "@storybook/addon-links": "^6.0.19",
     "@storybook/addons": "^6.0.19",
     "@storybook/react": "^6.0.18",
-    "babel-loader": "^8.1.0"
+    "babel-loader": "^8.1.0",
+    "react-docgen-typescript-loader": "^3.7.2"
   }
 }

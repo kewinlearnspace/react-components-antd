@@ -139,3 +139,5 @@
   - @storybook/addon-info (组件参数的详细文档和使用组件的代码)
 
 - 建立配置文件 `.storybook/addons.js`。引入 `addons` 相关插件文件,在`addons`中注册的插件才能在 storybook 中正常使用
+
+- 使用`react-docgen-typescript-loader`让React 通过注释自动生成文档。[github地址](https://github.com/strothj/react-docgen-typescript-loader)
