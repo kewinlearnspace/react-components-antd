@@ -53,6 +53,86 @@
 
 - 使用`npx xxx(测试的文件名) --watch` 配合`--watch`表示监听该测试,测试文件发生变化就重新运行
 
-### React官方推荐使用的测试框架
+### React 官方推荐使用的测试框架
+
 - [React Testing Library](https://reactjs.bootcss.com/docs/test-utils.html)
 
+### react 脚手架组件开发的缺点
+
+- `create-react-app`入口文件不合适管理组件库
+- 缺少行为追踪和属性调试功能
+
+- 理想状态[参考文档](https://storybook.js.org/docs/react/get-started/introduction)
+  - 分开展示各个组件不通过属性下的状态
+  - 能追踪组件的行为并且具有属性调试功能
+  - 可以为组件自动生成文档和属性列表
+
+### storybook 的使用
+
+- > [官网](https://storybook.js.org/)
+
+- 安装依赖
+  ```shell
+  npm i --save-dev @storybook/react
+  npm i --save react react-dom
+  npm i --save-dev @babel/core
+  npm i --save-dev babel-loader
+  ```
+- package.json 添加脚本命令
+  ```json
+  "storybook": "start-storybook -p 9001 -c .storybook" // 指定配置文件目录为 .storybook
+  ```
+- 项目根目录新建`.storybook/config.ts(config.js)`.并编写配置,可参考[官网](https://storybook.js.org/)。`config`文件就是运行storybook之前执行的配置文件
+  ```typescript
+  // 参考
+  import { configure } from '@storybook/react'
+  // src下的tsx文件都被处理
+  // 动态加载story,借用了webpackd额context API
+  configure(require.context('../src/', true, /\.stories\.tsx$/), module)
+  ```
+- 根据`config`中的配置定义`stories`目录,并在其目录下新建符合`config`定义规则的文件
+  ```typescript
+  // welcome.stories.tsx
+  import React from 'react'
+  import { storiesOf } from '@storybook/react'
+  storiesOf('Welcome page', module).add(
+    'welcome',
+    () => {
+      return (
+        <>
+          <h1>learning react components </h1>
+          <h3>安装试试</h3>
+          <code>npm install kewin-components --save</code>
+        </>
+      )
+    },
+    { info: { disable: true } }
+  )
+  ```
+- 运行 `npm run storybook`
+
+- 通过配置 webpack,使 storybook 支持 ts 语法
+  ```javascript
+  module.exports = ({ config }) => {
+    config.module.rules.push({
+      test: /\.tsx?$/,
+      use: [
+        {
+          loader: require.resolve('babel-loader'),
+          options: {
+            presets: [require.resolve('babel-preset-react-app')],
+          },
+        },
+      ],
+    })
+    config.resolve.extensions.push('.ts', '.tsx')
+    return config
+  }
+  ```
+- storybook 常用插件
+
+```shell
+npm add -D @storybook/addons @storybook/addon-actions @storybook/addon-links @storybook/addon-notes storybook-readme
+```
+
+- 建立配置文件 .storybook/addons.js。引入 addons 相关插件文件

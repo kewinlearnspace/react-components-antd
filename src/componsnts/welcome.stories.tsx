@@ -8,7 +8,7 @@ storiesOf('Welcome page', module)
         <h1>learning react components </h1>
         <h3>安装试试</h3>
         <code>
-          npm install vikingship --save
+          npm install kewin-components --save
         </code>
       </>
     )
