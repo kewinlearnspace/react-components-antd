@@ -28,7 +28,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size
    * 添加后缀 用于配置一些固定组合
    */
   append?: string | ReactElement,
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
 /**
@@ -68,7 +68,7 @@ export const Input: FC<InputProps> = (props) => {
         disabled={disabled}
         {...restProps}
       />
-      {append && <div className="viking-input-group-append">{append}</div>}
+      {append && <div className="kewin-input-group-append">{append}</div>}
     </div>
   )
 }
