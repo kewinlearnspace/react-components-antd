@@ -1,8 +1,9 @@
 import React, { FC, useState, ChangeEvent, ReactElement, KeyboardEvent, useEffect, useRef } from 'react';
 import Input, { InputProps } from '../Input/input';
 import Icon from '../Icon/icon';
+import Transition from '../Transition/transition'
 import useDebounce from '../../hooks/useDebounce';
-import useClickOutside from '../../hooks/useClickOutSide';
+import useClickOutside from '../../hooks/useClickOutside';
 import classNames from 'classnames';
 interface DataSourceObject {
   value: string
@@ -26,6 +27,7 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
   // 存放下拉列表的值
   const [suggestions, setSuggestions] = useState<DataSourceType[]>([])
   const [loading, setLoading] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
   const [hightLightIndex, setHeightLight] = useState(-1)
   const triggerSearch = useRef(false) // 控制在change下才进行搜索,select下不进行搜索
   const componentRef = useRef<HTMLDivElement>(null)
@@ -74,19 +76,31 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
   }
   // 显示下拉列表
   const generateDropdown = () => {
-    return <ul>
-      {
-        suggestions.map((item, index) => {
-          const cnames = classNames('suggestions-item', {
-            'item-heighlighted': index === hightLightIndex
-          })
-          return <li key={index} className={cnames} onClick={() => handleSelect(item)}>
-            {renderTemplate(item)}
-          </li>
+    return <Transition
+      in={showDropdown || loading}
+      animation="zoom-in-top"
+      timeout={300}
+      onExited={() => { setSuggestions([]) }}
+    >
+      <ul className="kewin-suggestion-list">
+        {loading &&
+          <div className="suggstions-loading-icon">
+            <Icon icon="spinner" spin />
+          </div>
         }
-        )
-      }
-    </ul>
+        {
+          suggestions.map((item, index) => {
+            const cnames = classNames('suggestion-item', {
+              'is-active': index === hightLightIndex
+            })
+            return <li key={index} className={cnames} onClick={() => handleSelect(item)}>
+              {renderTemplate(item)}
+            </li>
+          }
+          )
+        }
+      </ul>
+    </Transition>
   }
 
   const hightLight = (index: number) => {
