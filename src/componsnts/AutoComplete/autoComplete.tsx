@@ -1,7 +1,9 @@
-import React, { FC, useState, ChangeEvent, ReactElement, useEffect } from 'react';
+import React, { FC, useState, ChangeEvent, ReactElement, KeyboardEvent, useEffect, useRef } from 'react';
 import Input, { InputProps } from '../Input/input';
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
+import useClickOutside from '../../hooks/useClickOutSide';
+import classNames from 'classnames';
 interface DataSourceObject {
   value: string
 }
@@ -24,10 +26,17 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
   // 存放下拉列表的值
   const [suggestions, setSuggestions] = useState<DataSourceType[]>([])
   const [loading, setLoading] = useState(false)
+  const [hightLightIndex, setHeightLight] = useState(-1)
+  const triggerSearch = useRef(false) // 控制在change下才进行搜索,select下不进行搜索
+  const componentRef = useRef<HTMLDivElement>(null)
   const debounceValue = useDebounce(inputValue)
 
+  useClickOutside(componentRef, () => {
+    setSuggestions([])
+  })
+
   useEffect(() => {
-    if (debounceValue) {
+    if (debounceValue && triggerSearch) {
       // result | promise
       const result = fetchSuggestions(debounceValue)
       if (result instanceof Promise) {
@@ -42,10 +51,13 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
     } else {
       setSuggestions([])
     }
-  }, [debounceValue])
+    // 每次修改值后都需要重置,否则高亮部分会一直存在上一次搜索的结果中
+    setHeightLight(-1)
+  }, [debounceValue, triggerSearch])
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim()
     setInputValue(value)
+    triggerSearch.current = true
   }
 
   const handleSelect = (item: DataSourceType) => {
@@ -54,6 +66,7 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
     if (onSelect) {
       onSelect(item)
     }
+    triggerSearch.current = false
   }
   // 自定义模板
   const renderTemplate = (item: DataSourceType) => {
@@ -63,18 +76,56 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
   const generateDropdown = () => {
     return <ul>
       {
-        suggestions.map((item, index) => <li key={index} onClick={() => handleSelect(item)}>
-          {renderTemplate(item)}
-        </li>
+        suggestions.map((item, index) => {
+          const cnames = classNames('suggestions-item', {
+            'item-heighlighted': index === hightLightIndex
+          })
+          return <li key={index} className={cnames} onClick={() => handleSelect(item)}>
+            {renderTemplate(item)}
+          </li>
+        }
         )
       }
     </ul>
   }
-  const handleKeyDown = () => { }
-  return <div className="kewin-auto-compelete">
+
+  const hightLight = (index: number) => {
+    // 最上
+    if (index < 0) index = 0
+    // 最下
+    if (index >= suggestions.length) {
+      index = suggestions.length - 1
+    }
+    setHeightLight(index)
+  }
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    switch (e.keyCode) {
+      // 回车
+      case 13:
+        if (suggestions[hightLightIndex]) {
+          handleSelect(suggestions[hightLightIndex])
+        }
+        break
+      // 上
+      case 38:
+        hightLight(hightLightIndex - 1)
+        break
+      // 下
+      case 40:
+        hightLight(hightLightIndex + 1)
+        break
+      // esc
+      case 27:
+        setSuggestions([])
+        break
+      default: break
+    }
+  }
+  return <div className="kewin-auto-compelete" ref={componentRef}>
     <Input
       value={inputValue}
       onChange={handleChange}
+      onKeyDown={handleKeyDown}
       {...restProps}
     ></Input>
     {loading && <ul><Icon icon="spinner" spin></Icon></ul>}
