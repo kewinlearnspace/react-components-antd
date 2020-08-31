@@ -28,17 +28,19 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
   const [suggestions, setSuggestions] = useState<DataSourceType[]>([])
   const [loading, setLoading] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
-  const [hightLightIndex, setHeightLight] = useState(-1)
+  const [hightLightIndex, setHeightLightIndex] = useState(-1)
   const triggerSearch = useRef(false) // 控制在change下才进行搜索,select下不进行搜索
   const componentRef = useRef<HTMLDivElement>(null)
-  const debounceValue = useDebounce(inputValue)
+  const debounceValue = useDebounce(inputValue, 300)
 
   useClickOutside(componentRef, () => {
     setSuggestions([])
   })
 
   useEffect(() => {
-    if (debounceValue && triggerSearch) {
+    console.log(debounceValue, triggerSearch.current)
+    if (debounceValue && triggerSearch.current) {
+      setSuggestions([])
       // result | promise
       const result = fetchSuggestions(debounceValue)
       if (result instanceof Promise) {
@@ -46,16 +48,59 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
         result.then(data => {
           setLoading(false)
           setSuggestions(data)
+          if (data.length > 0) {
+            setShowDropdown(true)
+          }
         })
       } else {
         setSuggestions(result)
+        setShowDropdown(true)
+        if (result.length > 0) {
+          setShowDropdown(true)
+        }
       }
     } else {
-      setSuggestions([])
+      setShowDropdown(false)
+      // setSuggestions([])
     }
     // 每次修改值后都需要重置,否则高亮部分会一直存在上一次搜索的结果中
-    setHeightLight(-1)
+    setHeightLightIndex(-1)
   }, [debounceValue, triggerSearch])
+
+  const hightLight = (index: number) => {
+    // 最上
+    if (index < 0) index = 0
+    // 最下
+    if (index >= suggestions.length) {
+      index = suggestions.length - 1
+    }
+    setHeightLightIndex(index)
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    switch (e.keyCode) {
+      // 回车
+      case 13:
+        if (suggestions[hightLightIndex]) {
+          handleSelect(suggestions[hightLightIndex])
+        }
+        break
+      // 上
+      case 38:
+        hightLight(hightLightIndex - 1)
+        break
+      // 下
+      case 40:
+        hightLight(hightLightIndex + 1)
+        break
+      // esc
+      case 27:
+        setSuggestions([])
+        break
+      default: break
+    }
+  }
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim()
     setInputValue(value)
@@ -103,38 +148,6 @@ export const AutoComplete: FC<IAutoComplete> = (props) => {
     </Transition>
   }
 
-  const hightLight = (index: number) => {
-    // 最上
-    if (index < 0) index = 0
-    // 最下
-    if (index >= suggestions.length) {
-      index = suggestions.length - 1
-    }
-    setHeightLight(index)
-  }
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    switch (e.keyCode) {
-      // 回车
-      case 13:
-        if (suggestions[hightLightIndex]) {
-          handleSelect(suggestions[hightLightIndex])
-        }
-        break
-      // 上
-      case 38:
-        hightLight(hightLightIndex - 1)
-        break
-      // 下
-      case 40:
-        hightLight(hightLightIndex + 1)
-        break
-      // esc
-      case 27:
-        setSuggestions([])
-        break
-      default: break
-    }
-  }
   return <div className="kewin-auto-compelete" ref={componentRef}>
     <Input
       value={inputValue}

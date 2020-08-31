@@ -61,6 +61,7 @@ describe('test AutoComplete component', () => {
     expect(testProps.onSelect).toHaveBeenCalledWith({ value: 'ab', number: 11 })
     expect(wrapper.queryByText('ab')).not.toBeInTheDocument()
   })
+  // 点击外部隐藏下拉
   it('click outside should hide the dropdown', async () => {
     // input change
     fireEvent.change(inputNode, { target: { value: 'a' } })
