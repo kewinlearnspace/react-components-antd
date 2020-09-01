@@ -140,4 +140,17 @@
 
 - 建立配置文件 `.storybook/addons.js`。引入 `addons` 相关插件文件,在`addons`中注册的插件才能在 storybook 中正常使用
 
-- 使用`react-docgen-typescript-loader`让React 通过注释自动生成文档。[github地址](https://github.com/strothj/react-docgen-typescript-loader)
+- 使用`react-docgen-typescript-loader`让 React 通过注释自动生成文档。[github 地址](https://github.com/strothj/react-docgen-typescript-loader)
+
+## http 请求
+
+- xhr
+- \$.ajax
+- fetch
+  - 缺点:一般都需要经过封装。只对网络请求报错,对 400、500 都当做成功请求。默认不会带 cookie,需要手动添加参数配置。不支持 abort,不支持超时控制。没有办法原生检测请求的进度
+- axios
+
+## 免费线上 mockServer 服务
+
+- [JSONPlaceHolder](http://jsonplaceholder.typicode.com/)
+- [Mocky](https://designer.mocky.io/)
