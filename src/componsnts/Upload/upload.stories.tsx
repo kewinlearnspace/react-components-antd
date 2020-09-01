@@ -31,7 +31,7 @@ const SimpleUpload = () => {
     action="https://run.mocky.io/v3/42d3c016-7aef-4e57-8f4d-4c357f27b910"
     onChange={action('changed')}
     // beforeUpload={checkFileSize}
-    beforeUpload={filePromise}
+    // beforeUpload={filePromise}
   ></Upload>
 }
 storiesOf('Upload Component', module)

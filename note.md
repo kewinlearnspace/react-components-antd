@@ -154,3 +154,14 @@
 
 - [JSONPlaceHolder](http://jsonplaceholder.typicode.com/)
 - [Mocky](https://designer.mocky.io/)
+
+## 知识点补充
+
+- useState
+  - 使用 useState 定义的变量时,在修改其值时,可以通过给第二个参数传入一个函数来获取前一次的最新的值(用于异步请求时,动态的对某个 state 修改)
+  ```jsx
+  const [count, setCount] = useState()
+  setCount((prevCount) => {
+    return prevCount
+  })
+  ```

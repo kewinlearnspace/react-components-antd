@@ -1,7 +1,40 @@
-import React, { FC, useRef, ChangeEvent } from 'react';
+import React, { FC, useRef, ChangeEvent, useState } from 'react';
 import axios from 'axios';
 
 import Button from '../Button/button';
+
+export type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error'
+export interface UploadFile {
+  uid: string,
+  /**
+   * 大小
+   */
+  size: number,
+  /**
+   * 名字
+   */
+  name: string,
+  /**
+   * 状态
+   */
+  status?: UploadFileStatus,
+  /**
+   * 进度
+   */
+  precent?: number,
+  /**
+   * 原文件
+   */
+  raw?: File,
+  /**
+   * 成功
+   */
+  response?: any
+  /**
+   * 失败
+   */
+  error?: any
+}
 
 export interface IUploadProps {
   action: string,
@@ -34,7 +67,19 @@ export interface IUploadProps {
 export const Upload: FC<IUploadProps> = (props) => {
   const { action, beforeUpload, onProgress, onSuccess, onError, onChange } = props
   const fileInput = useRef<HTMLInputElement>(null)
-
+  const [fileList, setFileList] = useState<UploadFile[]>([])
+  // Partial表示可以更新参数的任何几项都可以
+  const updateFileList = (updaleFile: UploadFile, updateObj: Partial<UploadFile>) => {
+    setFileList(prevList => {
+      return prevList.map(file => {
+        if (file.uid === updaleFile.uid) {
+          return { ...file, ...updateObj }
+        } else {
+          return file
+        }
+      })
+    })
+  }
   const handleClick = () => {
     if (fileInput.current) {
       fileInput.current.click()
@@ -55,7 +100,7 @@ export const Upload: FC<IUploadProps> = (props) => {
   const uploadFiles = (files: FileList) => {
     console.log(files)
     let postFiles = Array.from(files)
-    console.log(postFiles)
+    // console.log(postFiles)
     postFiles.forEach(file => {
       if (!beforeUpload) {
         post(file)
@@ -74,6 +119,15 @@ export const Upload: FC<IUploadProps> = (props) => {
   }
 
   const post = (file: File) => {
+    let _file: UploadFile = {
+      uid: Date.now() + 'upload-file',
+      size: file.size,
+      name: file.name,
+      status: 'ready',
+      precent: 0,
+      raw: file
+    }
+    setFileList([_file, ...fileList])
     const formData = new FormData()
     formData.append(file.name, file)
     axios.post(action, formData, {
@@ -82,15 +136,21 @@ export const Upload: FC<IUploadProps> = (props) => {
       },
       onUploadProgress: (e) => {
         // e 上传进度相关的参数数据
-        console.log(e)
+        // console.log(e)
         let percentage = Math.round((e.loaded * 100) / e.total) || 0
         if (percentage < 100) {
+          updateFileList(_file, { precent: percentage, status: 'uploading' })
+          // setFileList(prevList => {
+          //   console.log(prevList)
+          //   return prevList
+          // })
           if (onProgress) {
             onProgress(percentage, file)
           }
         }
       }
     }).then(res => {
+      updateFileList(_file, { status: 'success', response: res.data })
       if (onSuccess) {
         onSuccess(res.data, file)
       }
@@ -99,6 +159,7 @@ export const Upload: FC<IUploadProps> = (props) => {
       }
     }).catch(err => {
       console.log(err)
+      updateFileList(_file, { status: 'error', error: err })
       if (onError) {
         onError(err, file)
       }
@@ -107,7 +168,7 @@ export const Upload: FC<IUploadProps> = (props) => {
       }
     })
   }
-
+  console.log(fileList)
   return (<div className="kewin-upload-component">
     <Button btnType='primary' onClick={handleClick} >
       Upload File
