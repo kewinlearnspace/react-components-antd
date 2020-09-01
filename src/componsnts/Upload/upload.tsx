@@ -2,6 +2,7 @@ import React, { FC, useRef, ChangeEvent, useState } from 'react';
 import axios from 'axios';
 
 import Button from '../Button/button';
+import uploadList, { UploadList } from './uploadList';
 
 export type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error'
 export interface UploadFile {
@@ -39,6 +40,10 @@ export interface UploadFile {
 export interface IUploadProps {
   action: string,
   /**
+   * 已上传的文件数组
+   */
+  defaultFileList?: UploadFile[],
+  /**
    * 文件上传前的回调
    */
   beforeUpload?: (file: File) => boolean | Promise<File>,
@@ -57,7 +62,11 @@ export interface IUploadProps {
   /**
    * 发生变化时的回调
    */
-  onChange?: (file: File) => void
+  onChange?: (file: File) => void,
+  /**
+   * 删除
+   */
+  onRemove?: (file: UploadFile) => void
 }
 
 /**
@@ -65,9 +74,17 @@ export interface IUploadProps {
  * 上传 -> beforeUpload(file) -> onProgress(event,file)文件进度 -> onChange(file)文件状态 -> onSuccess(res,file)上传成功/onError(err,file)上传失败
  */
 export const Upload: FC<IUploadProps> = (props) => {
-  const { action, beforeUpload, onProgress, onSuccess, onError, onChange } = props
+  const {
+    action,
+    defaultFileList,
+    beforeUpload,
+    onProgress,
+    onSuccess,
+    onError,
+    onChange,
+    onRemove } = props
   const fileInput = useRef<HTMLInputElement>(null)
-  const [fileList, setFileList] = useState<UploadFile[]>([])
+  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
   // Partial表示可以更新参数的任何几项都可以
   const updateFileList = (updaleFile: UploadFile, updateObj: Partial<UploadFile>) => {
     setFileList(prevList => {
@@ -168,6 +185,15 @@ export const Upload: FC<IUploadProps> = (props) => {
       }
     })
   }
+
+  const handleRemove = (file: UploadFile) => {
+    setFileList(prevList => {
+      return prevList.filter(item => item.uid !== file.uid)
+    })
+    if (onRemove) {
+      onRemove(file)
+    }
+  }
   console.log(fileList)
   return (<div className="kewin-upload-component">
     <Button btnType='primary' onClick={handleClick} >
@@ -180,6 +206,7 @@ export const Upload: FC<IUploadProps> = (props) => {
       type='file'
       onChange={handleChange}
     />
+    <UploadList fileList={fileList} onRemove={handleRemove}></UploadList>
   </div>)
 }
 
