@@ -1,8 +1,10 @@
 import { configure, addDecorator, addParameters } from '@storybook/react';
 import React from 'react';
 import { withInfo } from '@storybook/addon-info';
-
 import "../src/style/index.scss";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+library.add(fas)  // 配置加载图标文件
 // 全局装饰器要在卸载tex文件编译前
 const styles: React.CSSProperties = {
   padding: '20px 40px'
