@@ -22,7 +22,7 @@ export interface UploadFile {
   /**
    * 进度
    */
-  precent?: number,
+  percent?: number,
   /**
    * 原文件
    */
@@ -71,7 +71,6 @@ export interface IUploadProps {
 
 /**
  * 上传文件的生命周期
- * 上传 -> beforeUpload(file) -> onProgress(event,file)文件进度 -> onChange(file)文件状态 -> onSuccess(res,file)上传成功/onError(err,file)上传失败
  */
 export const Upload: FC<IUploadProps> = (props) => {
   const {
@@ -141,7 +140,7 @@ export const Upload: FC<IUploadProps> = (props) => {
       size: file.size,
       name: file.name,
       status: 'ready',
-      precent: 0,
+      percent: 0,
       raw: file
     }
     setFileList([_file, ...fileList])
@@ -156,7 +155,7 @@ export const Upload: FC<IUploadProps> = (props) => {
         // console.log(e)
         let percentage = Math.round((e.loaded * 100) / e.total) || 0
         if (percentage < 100) {
-          updateFileList(_file, { precent: percentage, status: 'uploading' })
+          updateFileList(_file, { percent: percentage, status: 'uploading' })
           // setFileList(prevList => {
           //   console.log(prevList)
           //   return prevList
