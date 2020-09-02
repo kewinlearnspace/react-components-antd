@@ -190,3 +190,14 @@
   "exclude": ["src/**/*.test.tsx", "src/**/*.stories.tsx", "src/setupTests.ts"] // 排除编译的文件
 }
 ```
+
+## CI / CD
+
+- CI(持续集成) => 目的:使产品可以快速的迭
+  - 频繁的将代码集成到主干(master) -> 核心措施:代码继承到主干前,必须通过自动化测试,有一个失败都不能集成
+  - 快速发现错误
+  - 防止分支大幅偏离主干
+  - CI 持续集成如:[travis-ci](https://travis-ci.com/)、[jenkins](https://www.jenkins.io/)
+- CD(持续交付,持续部署)
+  - 频繁的将软件的新版本,交付给质量团队或者用户
+  - 代码通过评审以后,自动部署到生产环境
