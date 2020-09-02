@@ -1,7 +1,7 @@
 import React from 'react';
-import Menu from './componsnts/Menu/menu';
-import MenuItem from './componsnts/Menu/menuItem';
-import SubMenu from './componsnts/Menu/subMenu';
+import Menu from './components/Menu/menu';
+import MenuItem from './components/Menu/menuItem';
+import SubMenu from './components/Menu/subMenu';
 
 function App() {
   return (
