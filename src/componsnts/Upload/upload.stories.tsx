@@ -2,6 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Upload, UploadFile } from './upload';
+import Icon from '../Icon/icon';
 
 
 const defaultFileList: UploadFile[] = [
@@ -54,17 +55,24 @@ const SimpleUpload = () => {
   // ></Upload>
 
   // 测试 uploadList
-  return <Upload
-    action="https://run.mocky.io/v3/42d3c016-7aef-4e57-8f4d-4c357f27b910"
-    onChange={action('changed')}
-    defaultFileList={defaultFileList}
-    onRemove={action('remove')}
-    name='filename'
-    data={{ 'key': 'value' }}
-    headers={{ 'X-Powered-By': 'kewin' }}
-    accept='.png'
-    multiple
-  ></Upload>
+  return (
+    <Upload
+      action="https://run.mocky.io/v3/42d3c016-7aef-4e57-8f4d-4c357f27b910"
+      onChange={action('changed')}
+      defaultFileList={defaultFileList}
+      onRemove={action('remove')}
+      name='filename'
+      data={{ 'key': 'value' }}
+      headers={{ 'X-Powered-By': 'kewin' }}
+      accept='.png'
+      multiple
+      darg
+    >
+      <Icon icon="upload" size='5x' theme='secondary'></Icon>
+      <br />
+      <p>Drag file over to upload</p>
+    </Upload>
+  )
 }
 storiesOf('Upload Component', module)
   .add('Upload', SimpleUpload)

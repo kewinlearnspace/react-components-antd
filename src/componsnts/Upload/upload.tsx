@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import Button from '../Button/button';
 import uploadList, { UploadList } from './uploadList';
+import Dragger from './dragger';
 
 export type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error'
 export interface UploadFile {
@@ -90,7 +91,11 @@ export interface IUploadProps {
   /**
    * 是否支持一次上传多个
    */
-  multiple?: boolean
+  multiple?: boolean,
+  /**
+   * 是否开启拖拽
+   */
+  darg?: boolean
 }
 
 /**
@@ -111,7 +116,9 @@ export const Upload: FC<IUploadProps> = (props) => {
     data,
     withCredentials,
     accept,
-    multiple } = props
+    multiple,
+    children,
+    darg } = props
   const fileInput = useRef<HTMLInputElement>(null)
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
   // Partial表示可以更新参数的任何几项都可以
@@ -233,21 +240,35 @@ export const Upload: FC<IUploadProps> = (props) => {
   }
 
   console.log(fileList)
-  return (<div className="kewin-upload-component">
-    <Button btnType='primary' onClick={handleClick} >
-      Upload File
-    </Button>
-    <input
-      className="kewin-file-input"
-      ref={fileInput}
-      style={{ display: "none" }}
-      type='file'
-      onChange={handleChange}
-      accept={accept}
-      multiple={multiple}
-    />
-    <UploadList fileList={fileList} onRemove={handleRemove}></UploadList>
-  </div>)
+  return (
+    <div className="kewin-upload-component">
+      {/* <Button btnType='primary' onClick={handleClick} >
+        Upload File
+      </Button> */}
+      <div
+        className='kewin-upload-input'
+        style={{ display: 'inline-block' }}
+        onClick={handleClick}
+      >
+        {
+          darg ?
+            <Dragger
+              onFile={(files) => { uploadFiles(files) }}>{children}
+            </Dragger> :
+            children
+        }
+        <input
+          className="kewin-file-input"
+          ref={fileInput}
+          style={{ display: "none" }}
+          type='file'
+          onChange={handleChange}
+          accept={accept}
+          multiple={multiple}
+        />
+      </div>
+      <UploadList fileList={fileList} onRemove={handleRemove}></UploadList>
+    </div>)
 }
 
 Upload.defaultProps = {
