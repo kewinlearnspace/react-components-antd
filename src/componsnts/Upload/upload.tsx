@@ -66,7 +66,31 @@ export interface IUploadProps {
   /**
    * 删除
    */
-  onRemove?: (file: UploadFile) => void
+  onRemove?: (file: UploadFile) => void,
+  /**
+   * 请求头设置 key:value形式
+   */
+  headers?: { [key: string]: any },
+  /**
+   * 文件对应的字段名称
+   */
+  name?: string,
+  /**
+   * 文件名称外的其他数据集合
+   */
+  data?: { [key: string]: any },
+  /**
+   * 是否跨域
+   */
+  withCredentials?: boolean,
+  /**
+   * 上传的文件类型控制
+   */
+  accept?: string,
+  /**
+   * 是否支持一次上传多个
+   */
+  multiple?: boolean
 }
 
 /**
@@ -81,7 +105,13 @@ export const Upload: FC<IUploadProps> = (props) => {
     onSuccess,
     onError,
     onChange,
-    onRemove } = props
+    onRemove,
+    headers,
+    name,
+    data,
+    withCredentials,
+    accept,
+    multiple } = props
   const fileInput = useRef<HTMLInputElement>(null)
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
   // Partial表示可以更新参数的任何几项都可以
@@ -113,6 +143,15 @@ export const Upload: FC<IUploadProps> = (props) => {
     }
   }
 
+  const handleRemove = (file: UploadFile) => {
+    setFileList(prevList => {
+      return prevList.filter(item => item.uid !== file.uid)
+    })
+    if (onRemove) {
+      onRemove(file)
+    }
+  }
+
   const uploadFiles = (files: FileList) => {
     console.log(files)
     let postFiles = Array.from(files)
@@ -130,7 +169,6 @@ export const Upload: FC<IUploadProps> = (props) => {
           post(file)
         }
       }
-      post(file)
     })
   }
 
@@ -143,13 +181,22 @@ export const Upload: FC<IUploadProps> = (props) => {
       percent: 0,
       raw: file
     }
-    setFileList([_file, ...fileList])
+    // setFileList([_file, ...fileList])
+    setFileList(prevList => {
+      return [_file, ...prevList]
+    })
     const formData = new FormData()
-    formData.append(file.name, file)
+    formData.append(name || 'file', file)
+    if (data) {
+      // 将data中的所有属性添加到formData中
+      Object.keys(data).forEach(key => { formData.append(key, data[key]) })
+    }
     axios.post(action, formData, {
       headers: {
+        ...headers,
         'Content-Type': 'multipart/form-data'
       },
+      withCredentials,
       onUploadProgress: (e) => {
         // e 上传进度相关的参数数据
         // console.log(e)
@@ -185,14 +232,6 @@ export const Upload: FC<IUploadProps> = (props) => {
     })
   }
 
-  const handleRemove = (file: UploadFile) => {
-    setFileList(prevList => {
-      return prevList.filter(item => item.uid !== file.uid)
-    })
-    if (onRemove) {
-      onRemove(file)
-    }
-  }
   console.log(fileList)
   return (<div className="kewin-upload-component">
     <Button btnType='primary' onClick={handleClick} >
@@ -204,9 +243,15 @@ export const Upload: FC<IUploadProps> = (props) => {
       style={{ display: "none" }}
       type='file'
       onChange={handleChange}
+      accept={accept}
+      multiple={multiple}
     />
     <UploadList fileList={fileList} onRemove={handleRemove}></UploadList>
   </div>)
+}
+
+Upload.defaultProps = {
+  name: 'file'
 }
 
 export default Upload;

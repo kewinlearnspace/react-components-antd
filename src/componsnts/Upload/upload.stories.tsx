@@ -59,6 +59,11 @@ const SimpleUpload = () => {
     onChange={action('changed')}
     defaultFileList={defaultFileList}
     onRemove={action('remove')}
+    name='filename'
+    data={{ 'key': 'value' }}
+    headers={{ 'X-Powered-By': 'kewin' }}
+    accept='.png'
+    multiple
   ></Upload>
 }
 storiesOf('Upload Component', module)
