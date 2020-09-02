@@ -25,7 +25,7 @@ const testFile = new File(['xyz'], 'test.png', { type: 'image/png' })
 describe('test upload component', () => {
   beforeEach(() => {
     wrapper = render(<Upload {...testProps}>Click to upload</Upload>)
-    fileInput = wrapper.container.querySelector('.viking-file-input')
+    fileInput = wrapper.container.querySelector('.kewin-file-input')
     uploadArea = wrapper.queryByText('Click to upload')
   })
   it('upload process should works fine', async () => {

@@ -158,10 +158,35 @@
 ## 知识点补充
 
 - useState
+
   - 使用 useState 定义的变量时,在修改其值时,可以通过给第二个参数传入一个函数来获取前一次的最新的值(用于异步请求时,动态的对某个 state 修改)
+
   ```jsx
   const [count, setCount] = useState()
   setCount((prevCount) => {
     return prevCount
   })
   ```
+
+- 模块化
+  - 可重用代码
+  - 可维护性
+  - 可重用性
+
+## tsconfig.build.json 配置选项
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "dist", // 输出文件
+    "module": "esnext", // 输出类型
+    "target": "es5", // 编译后符合的es标准
+    "declaration": true, // 获取到类型定义
+    "jsx": "react",
+    "moduleResolution": "Node", // module路径的查找方式
+    "allowSyntheticDefaultImports": true // 导入方式 默认为false
+  },
+  "include": ["src"], // 编译src下的文件
+  "exclude": ["src/**/*.test.tsx", "src/**/*.stories.tsx", "src/setupTests.ts"] // 排除编译的文件
+}
+```
